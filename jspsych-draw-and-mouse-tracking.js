@@ -68,7 +68,6 @@ jsPsych.plugins['draw-and-mouse-tracking'] = (function(){
       document.getElementsByClassName("jspsych-content-wrapper")[0].style.backgroundColor = trial.content_wrapper_color; //Background color
       
       
-      
       let new_html =
       '<canvas id="myCanvas" class="jspsych-canvas" width=' +
       trial.canvas_width +
@@ -207,8 +206,8 @@ jsPsych.plugins['draw-and-mouse-tracking'] = (function(){
       after_response({ // callback function
         key: -1,
         rt: release_click_time - start_time,
-        clickX: e.offsetX,
-        clickY: e.offsetY,
+        X_click: e.offsetX,
+        Y_click: e.offsetY,
         pos_tracking: pos_tracking,
         cursor_time: cursor_time   
     });
@@ -223,8 +222,8 @@ jsPsych.plugins['draw-and-mouse-tracking'] = (function(){
      // store response
      var response = { 
       rt: null,
-      clickX: null,
-      clickY: null,
+      X_click: null,
+      Y_click: null,
     };
 
     // function to end trial when it is time
@@ -240,8 +239,8 @@ jsPsych.plugins['draw-and-mouse-tracking'] = (function(){
 
     var trial_data = {
       "rt": response.rt,
-      "click_x": response.clickX, //por que viene de repose si ahi no hay clickX ?
-      "click_y": response.clickY,
+      "X_click": response.X_click,
+      "Y_click": response.Y_click,
       "position": pos_tracking,
       "cursor time": cursor_time
     };

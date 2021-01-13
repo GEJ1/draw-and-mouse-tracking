@@ -5,7 +5,8 @@ New JsPsych plugin for draw in canvas and cursor position tracking
 
 **Parameters:**
 * Images to present
-* Background color 
+* canvas_background_color 
+* content_wrapper_color
 * Draw line color
 * Line width
 * Canvas size
@@ -13,8 +14,8 @@ New JsPsych plugin for draw in canvas and cursor position tracking
 
 
 **Data Generated:**
-*  pos_tracking: The X and Y position of the cursor in the canvas while you are drawing.
-*  cursor_time : The time relative to the start of the trial for every (X,Y) position.
+* pos_tracking: The X and Y position of the cursor in the canvas while you are drawing.
+* cursor_time : The time relative to the start of the trial for every (X,Y) position. (This can be useful to calculate velocity)
 * X_click: The position of the click in X coordinate.
 * Y_Click: The position of the click in Y coordinate.
-* trial_duration
+* rt: trial_duration

@@ -56,13 +56,14 @@ jsPsych.plugins['draw-and-mouse-tracking'] = (function(){
         
       }
     }
-
-   
     
     let default_maxWidth;
     
     plugin.trial = function(display_element, trial){
-      //display_element is a HTML DOM element
+
+    // data
+    let pos_tracking       = []; 
+    let cursor_time        = [];
       
       //background color //I need to improve this
       document.getElementsByClassName("jspsych-content-wrapper")[0].style.backgroundColor = trial.content_wrapper_color; //Background color
@@ -113,7 +114,7 @@ jsPsych.plugins['draw-and-mouse-tracking'] = (function(){
     const ctx = canvas.getContext('2d');
 
     let start_time;
-   
+
     // trial time init
     start_time = performance.now();
         
@@ -146,71 +147,70 @@ jsPsych.plugins['draw-and-mouse-tracking'] = (function(){
       }
     });
 
-        // data
-        let pos_tracking       = []; 
-        let cursor_time        = [];
+      
+    function mouseMove(e){
 
+      var x = e.clientX;
+      var y = e.clientY;
+      var coor = "(" + x + "," + y + ")";
+      console.log(coor);
+      pos_tracking.push(coor); 	//Save coor in array pos_tracking
+      
+      //timer for cursor 
+      
+      // var startTime = Date.now();
+      
+      let startTime = Math.round(performance.now()) ;
+
+      //start_time was declared at begining of the trial
+      
+      let time_in_trial = Math.round(startTime - start_time)
+      
+      // console.log("T1: " + startTime);
+      // console.log("T2: " + Math.round(start_time));
+      // console.log("T1 - T2: " + time_in_trial);
+      
+      //cursor time is an array with the time measurement for every [x,y] position relative to the start of the trial
+      cursor_time.push(time_in_trial); 
+      
+      }
         
-        function mouseMove(e){
+    function drawLine(ctx, x1, y1, x2, y2) {
 
-          var x = e.clientX;
-          var y = e.clientY;
-          var coor = "(" + x + "," + y + ")";
-          console.log(coor);
-          pos_tracking.push(coor); 	//Save coor in array pos_tracking
-          
-          //timer for cursor 
-         
-          // var startTime = Date.now();
-          
-          let startTime = Math.round(performance.now()) ;
-    
-          //start_time was declared at begining of the trial
-          
-          let time_in_trial = Math.round(startTime - start_time)
-         
-          // console.log("T1: " + startTime);
-          // console.log("T2: " + Math.round(start_time));
-          // console.log("T1 - T2: " + time_in_trial);
-          
-          //cursor time is an array with the time measurement for every [x,y] position relative to the start of the trial
-          cursor_time.push(time_in_trial); 
-         
-          }
-         
-        function drawLine(ctx, x1, y1, x2, y2) {
-          ctx.beginPath();
-          ctx.strokeStyle = trial.drawline_color; // drawLine color
-          ctx.lineWidth = trial.lineWidth;
-          ctx.moveTo(x1, y1);
-          ctx.lineTo(x2, y2) 
-          ctx.stroke();
-          ctx.closePath(); // ojo que por ahi hay que comentar esto
-         }
+      ctx.beginPath();
+      ctx.strokeStyle = trial.drawline_color; // drawLine color
+      ctx.lineWidth = trial.lineWidth;
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2) 
+      ctx.stroke();
+      ctx.closePath(); // ojo que por ahi hay que comentar esto
+
+      }
+
   
-    
-        function mouseUpFunc(e){ //ex mouseDownFunc
-          
-          let release_click_time;
-          
-          release_click_time = performance.now();
+      function mouseUpFunc(e){ //ex mouseDownFunc
+        
+        let release_click_time;
+        
+        release_click_time = performance.now();
 
-          if (isDrawing === true) {
-            drawLine(ctx, x, y, e.offsetX, e.offsetY);
-            x = 0;
-            y = 0;
-            isDrawing = false;
-          }
+        if (isDrawing === true) {
+          drawLine(ctx, x, y, e.offsetX, e.offsetY);
+          x = 0;
+          y = 0;
+          isDrawing = false;
+        }
 
-    
-      after_response({ // callback function
-        key: -1,
-        rt: release_click_time - start_time,
-        X_click: e.offsetX,
-        Y_click: e.offsetY,
-        pos_tracking: pos_tracking,
-        cursor_time: cursor_time   
-    });
+        let info = { 
+          key: -1,
+          rt: release_click_time - start_time,
+          clickX: e.offsetX,
+          clickY: e.offsetY,  
+          pos_tracking: pos_tracking ,
+          cursor_time: cursor_time   
+      }
+  
+        after_response(info);
   }
   
     
@@ -223,11 +223,19 @@ jsPsych.plugins['draw-and-mouse-tracking'] = (function(){
      var response = { 
       rt: null,
       X_click: null,
-      Y_click: null,
+      Y_click: null
     };
 
     // function to end trial when it is time
     var end_trial = function() {
+      var trial_data = {
+        "rt": response.rt,
+        "X_click": response.clickX,
+        "Y_click": response.clickY,
+        "position": JSON.stringify(pos_tracking),
+        "cursor time": JSON.stringify(cursor_time)
+  
+      };
       // document.getElementById('jspsych-content').style.maxWidth = default_maxWidth; // restore
       //window.removeEventListener("mousedown", mouseDownFunc);
       canvas.removeEventListener("mouseup", mouseUpFunc);
@@ -237,36 +245,34 @@ jsPsych.plugins['draw-and-mouse-tracking'] = (function(){
 
     // gather the data to store for the trial
 
-    var trial_data = {
-      "rt": response.rt,
-      "X_click": response.X_click,
-      "Y_click": response.Y_click,
-      "position": pos_tracking,
-      "cursor time": cursor_time
-    };
 
-    // clear the display
-    display_element.innerHTML = '';
+      // clear the display
+      display_element.innerHTML = '';
 
-    // move on to the next trial
-    jsPsych.finishTrial(trial_data,cursor_time);
+      // move on to the next trial
+      jsPsych.finishTrial(trial_data);
 
     };
 
-    var after_response = function(info) {
+    function after_response(info) {
+
+      // only record the first response
+      if (response.key == null) {
+        response = info;
+      }
     
 
-      if (trial.response_ends_trial) { //LO ESTOY USANDO? UTIL? 
-        end_trial();
-      }
-    };
+        if (trial.response_ends_trial) { //LO ESTOY USANDO? UTIL? 
+          end_trial();
+        }
+      };
 
-    // end trial if trial_duration is set
-    if (trial.trial_duration !== null) {
-      jsPsych.pluginAPI.setTimeout(function() {
-        end_trial();
-      }, trial.trial_duration);
-    }
+      // end trial if trial_duration is set
+      if (trial.trial_duration !== null) {
+        jsPsych.pluginAPI.setTimeout(function() {
+          end_trial();
+        }, trial.trial_duration);
+      }
 
   };
 

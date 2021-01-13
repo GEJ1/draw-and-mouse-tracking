@@ -43,13 +43,11 @@ jsPsych.plugins['draw-and-mouse-tracking'] = (function(){
         },
         response_ends_trial: {
           type: jsPsych.plugins.parameterType.BOOL,
-          pretty_name: 'Response ends trial',
           default: true,
           description: 'If true, trial will end when subject makes a response.'
         },
         trial_duration: {
           type: jsPsych.plugins.parameterType.INT,
-          pretty_name: 'Trial duration',
           default: null,
           description: 'How long to show trial before it ends.'
         }
@@ -65,18 +63,18 @@ jsPsych.plugins['draw-and-mouse-tracking'] = (function(){
     let pos_tracking       = []; 
     let cursor_time        = [];
       
-      //background color //I need to improve this
-      document.getElementsByClassName("jspsych-content-wrapper")[0].style.backgroundColor = trial.content_wrapper_color; //Background color
-      
-      
-      let new_html =
-      '<canvas id="myCanvas" class="jspsych-canvas" width=' +
-      trial.canvas_width +
-      " height=" +
-      trial.canvas_height +
-      ' style="background-color:' +
-      trial.canvas_background_color +
-      ';"></canvas>';
+    //background color //I need to improve this
+    document.getElementsByClassName("jspsych-content-wrapper")[0].style.backgroundColor = trial.content_wrapper_color; //Background color
+    
+    
+    let new_html =
+    '<canvas id="myCanvas" class="jspsych-canvas" width=' +
+    trial.canvas_width +
+    " height=" +
+    trial.canvas_height +
+    ' style="background-color:' +
+    trial.canvas_background_color +
+    ';"></canvas>';
 
 
     imageObj = new Image();  // declare globally
@@ -93,7 +91,7 @@ jsPsych.plugins['draw-and-mouse-tracking'] = (function(){
 
     imageObj.src = trial.stimulus;
 
-    function resizeCanvas() { //ACA TENGO QUE VER EL TAMANIO
+    function resizeCanvas() { //I need to look the size
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
@@ -183,12 +181,12 @@ jsPsych.plugins['draw-and-mouse-tracking'] = (function(){
       ctx.moveTo(x1, y1);
       ctx.lineTo(x2, y2) 
       ctx.stroke();
-      ctx.closePath(); // ojo que por ahi hay que comentar esto
+      ctx.closePath(); 
 
       }
 
   
-      function mouseUpFunc(e){ //ex mouseDownFunc
+      function mouseUpFunc(e){ 
         
         let release_click_time;
         
@@ -212,12 +210,6 @@ jsPsych.plugins['draw-and-mouse-tracking'] = (function(){
   
         after_response(info);
   }
-  
-    
-    if ( ! canvas || ! canvas.getContext ) { // util?
-      alert('This browser does not support the canvas element.');
-      return;
-    }
   
      // store response
      var response = { 
@@ -262,7 +254,7 @@ jsPsych.plugins['draw-and-mouse-tracking'] = (function(){
       }
     
 
-        if (trial.response_ends_trial) { //LO ESTOY USANDO? UTIL? 
+        if (trial.response_ends_trial) {
           end_trial();
         }
       };

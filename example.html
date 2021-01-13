@@ -1,0 +1,70 @@
+let timeline = [];
+ 
+images = ['https://c.files.bbci.co.uk/12A9B/production/_111434467_gettyimages-1143489763.jpg',
+'https://images.unsplash.com/photo-1545315171-cc80c905c252?ixlib=rb-1.2.1&w=1000&q=80',
+'https://api.time.com/wp-content/uploads/2015/02/cats.jpg?quality=85&w=1024&h=512&crop=1']
+
+
+let x = 0;
+let y = 0; 
+isDrawing = false;
+
+// store all images names in an array of objects {'fileName': images[imag]}
+let container = { }; // main object
+timelineVariables = [];  
+
+for (imag in images){
+            // imag = 'stimuli/'+imag;
+            timelineVariables.push(container['prop'+ imag ]   = { 'fileName': images[imag]}
+            ); 
+            
+}
+ 
+  
+   var fullScreen = {
+        type: 'fullscreen',
+        fullscreen_mode: true,
+        // message: '<p>El experimento ira a pantalla completa cuando usted presione el boton que se encuentra debajo</p><br>',
+        // button_label: 'Continuar a pantalla completa'    
+    } 
+    
+    
+  let trial = {
+
+    timeline: [
+        {
+            type: 'html-keyboard-response', //fixation cross
+            stimulus: `<p style='font-size:350%;color:black'>+</p>`,
+            choices: jsPsych.NO_KEYS,
+            trial_duration: 500
+        },
+        {
+            type: 'draw-and-mouse-tracking',
+            // trial_duration: 10000,
+            canvas_background_color: 'gray',
+            stimulus: jsPsych.timelineVariable('fileName'),
+            // drawline_color: 'red',
+            content_wrapper_color: 'gray',
+            // lineWidth: 5
+        }
+    ],
+    timeline_variables: timelineVariables
+    }
+    
+    jsPsych.init({
+        
+        timeline: [fullScreen, trial],
+        
+        // Image data should be preloaded
+        preload_images: images, 
+        
+         on_finish: function(){
+      
+        // Display data
+        jsPsych.data.displayData();
+        
+           
+         }
+
+        
+        });

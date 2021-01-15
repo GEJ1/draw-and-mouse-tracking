@@ -59,6 +59,11 @@ jsPsych.plugins['draw-and-mouse-tracking'] = (function(){
     
     plugin.trial = function(display_element, trial){
 
+    //global variables 
+    let x = 0;
+    let y = 0; 
+    isDrawing = false;
+    
     // data
     let pos_tracking       = []; 
     let cursor_time        = [];

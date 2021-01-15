@@ -1,3 +1,7 @@
+// 01/21
+// Author: Gustavo Juantorena
+// https://github.com/GEJ1
+
 jsPsych.plugins['draw-and-mouse-tracking'] = (function(){
 
     var plugin = {};

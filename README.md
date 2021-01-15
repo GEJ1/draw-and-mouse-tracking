@@ -1,6 +1,9 @@
 # draw-and-mouse-tracking
-New JsPsych plugin for draw in canvas and cursor position tracking
+*New JsPsych plugin for draw in canvas and cursor position tracking*
 
+🧠 You can see it an [working example](https://nrz7zmmo5m.cognition.run/) running on Cognition.run: 
+
+![alt text](https://gph.is/g/aRjMMNd)
 
 
 **Parameters:**

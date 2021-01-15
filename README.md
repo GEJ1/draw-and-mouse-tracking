@@ -3,7 +3,7 @@
 
 🧠 You can see it an [working example](https://nrz7zmmo5m.cognition.run/) running on Cognition.run: 
 
-![alt text](https://gph.is/g/aRjMMNd)
+![draw and mouse tracking jsPsych plugin example gif](https://github.com/GEJ1/draw-and-mouse-tracking/blob/main/new_plugin.gif)
 
 
 **Parameters:**
